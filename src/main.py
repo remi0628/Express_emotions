@@ -49,7 +49,8 @@ def push1():
     label2.configure(image='')
 
 def push2():
-    label["text"] = "odoroki"
+    global emotion_text
+    label["text"] = emotion_text
     label1.configure(image='')
     label2.configure(image=img2)
 
