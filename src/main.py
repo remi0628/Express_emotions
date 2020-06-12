@@ -1,4 +1,5 @@
 import sys
+import cv2
 import tkinter as tk
 import tkinter.filedialog
 from PIL import Image, ImageTk
@@ -11,6 +12,7 @@ def main():
 
 
 
+'''
 def image_gui():
     global label, label1, label2
     global img1, img2
@@ -61,7 +63,7 @@ def press_key_func(event):
     elif key == "Right":
         push2()
 
-#画像のリサイズ
+#画像のリサイズ tk用
 def image_resize(image):
     img = Image.open(image)
     w = img.width # 横幅を取得
@@ -69,6 +71,8 @@ def image_resize(image):
     if 500 <= h or 450 <= w:
         img = img.resize(( int(w * (450/h)), int(h * (450/h)) ))
     return img
+'''
+
 
 
 if __name__ == '__main__':
