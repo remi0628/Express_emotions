@@ -2,15 +2,14 @@ import sys
 import tkinter as tk
 import tkinter.filedialog
 from PIL import Image, ImageTk
-import concurrent.futures
 
 # face_classificationのファイル
 from video_emotion_color_demo import emotion_demo
 
 def main():
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
-    executor.submit(emotion_demo)
-    executor.submit(image_gui)
+    emotion_demo()
+
+
 
 def image_gui():
     global label, label1, label2
