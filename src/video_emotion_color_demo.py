@@ -73,7 +73,7 @@ def emotion_demo():
             if emotion_text == 'angry':
                 color = emotion_probability * np.asarray((255, 0, 0))
             elif emotion_text == 'sad':
-                img = cv2.imread('../img/odoroki.png', -1)
+                img = cv2.imread('../img/odoroki.png', -1) # 関数にする
                 cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((0, 0, 255))
             elif emotion_text == 'happy':
