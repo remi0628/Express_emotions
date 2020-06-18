@@ -18,6 +18,19 @@ def draw_bounding_box(face_coordinates, image_array, color):
     x, y, w, h = face_coordinates
     cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
 
+def draw_bounding_box2(face_coordinates, image_array, color, img):
+    x, y, w, h = face_coordinates
+    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    if(w < 150):
+        img_face = cv2.resize(img, (w, h))
+    else:
+        img_face = cv2.resize(img, (w, h))
+    img2 = image_array.copy()
+    img2[y:y+h, x:x+w] = img_face
+    return img2
+
+
 def apply_offsets(face_coordinates, offsets):
     x, y, width, height = face_coordinates
     x_off, y_off = offsets

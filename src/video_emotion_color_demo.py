@@ -8,12 +8,13 @@ from utils.datasets import get_labels
 from utils.inference import detect_faces
 from utils.inference import draw_text
 from utils.inference import draw_bounding_box
+from utils.inference import draw_bounding_box2
 from utils.inference import apply_offsets
 from utils.inference import load_detection_model
 from utils.preprocessor import preprocess_input
 
 
-#img = cv2.imread('../img/happy.png')
+# img = cv2.imread('../img/happy.png')
 
 
 def emotion_demo():
@@ -36,9 +37,12 @@ def emotion_demo():
     # starting lists for calculating modes
     emotion_window = []
 
+    global img
+    img = cv2.imread('../img/happy.png')
+
     # starting video streaming
     cv2.namedWindow('window_frame')
-    video_capture = cv2.VideoCapture(0)
+    video_capture = cv2.VideoCapture(0) # 0は内蔵カメラ, 1はUSBカメラ
     while True:
         bgr_image = video_capture.read()[1]
         gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
@@ -65,7 +69,7 @@ def emotion_demo():
 
             if len(emotion_window) > frame_window:
                 emotion_window.pop(0)
-            try:
+            try:s
                 emotion_mode = mode(emotion_window)
             except:
                 continue
@@ -92,11 +96,13 @@ def emotion_demo():
             color = color.astype(int)
             color = color.tolist()
 
-            draw_bounding_box(face_coordinates, rgb_image, color)
+            # draw_bounding_box(face_coordinates, rgb_image, color)
+            rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
             draw_text(face_coordinates, rgb_image, emotion_mode,
                       color, 0, -45, 1, 1)
 
-        cv2.waitKey(1)
+        cv2.imshow('image', img)
+        cv2.waitKey(10)
 
         bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
         cv2.imshow('window_frame', bgr_image)

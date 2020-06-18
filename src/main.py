@@ -4,11 +4,27 @@ import tkinter as tk
 import tkinter.filedialog
 from PIL import Image, ImageTk
 
+from statistics import mode
+
+from keras.models import load_model
+import numpy as np
+
+from utils.datasets import get_labels
+from utils.inference import detect_faces
+from utils.inference import draw_text
+from utils.inference import draw_bounding_box
+from utils.inference import apply_offsets
+from utils.inference import load_detection_model
+from utils.preprocessor import preprocess_input
+
 # face_classificationのファイル
+import video_emotion_color_demo
 from video_emotion_color_demo import emotion_demo
+from image_processing import image_pro
 
 def main():
     emotion_demo()
+    #image_pro()
 
 
 
