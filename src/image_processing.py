@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 
-def main():
+def image_pro():
 	# 画像の読み込み
 	src_img = cv2.imread('../img/happy.png')
 	#back_img = cv2.imread('../img/green_back.jpg')
@@ -18,7 +18,7 @@ def main():
 	# アフィン変換
 	img = cv2.warpAffine(img, mat, (500, 500), borderValue=(0, 128, 255)) # アフィン変換
 	'''
-	            
+
 
 	cv2.imshow('image', img)
 	cv2.waitKey(0)

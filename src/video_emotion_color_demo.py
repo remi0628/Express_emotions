@@ -14,9 +14,6 @@ from utils.inference import load_detection_model
 from utils.preprocessor import preprocess_input
 
 
-# img = cv2.imread('../img/happy.png')
-
-
 def emotion_demo():
     # parameters for loading data and images
     detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
@@ -69,7 +66,7 @@ def emotion_demo():
 
             if len(emotion_window) > frame_window:
                 emotion_window.pop(0)
-            try:s
+            try:
                 emotion_mode = mode(emotion_window)
             except:
                 continue
