@@ -3,6 +3,7 @@ import numpy as np
 import math
 
 
+
 def main():
 	# 画像の読み込み
 	src_img = cv2.imread('../img/happy.png')
