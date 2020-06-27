@@ -20,7 +20,7 @@ from utils.preprocessor import preprocess_input
 # face_classificationのファイル
 import video_emotion_color_demo
 from video_emotion_color_demo import emotion_demo
-from image_processing import image_pro
+#from image_processing import image_pro
 
 def main():
     emotion_demo()
