@@ -28,6 +28,7 @@ def draw_bounding_box2(face_coordinates, image_array, color, img):
         img_face = cv2.resize(img, (w, h))
     img2 = image_array.copy()
     img2[y:y+h, x:x+w] = img_face
+    print("x:", x, "y:", y , "w:", w, "h:", h)
     return img2
 
 
