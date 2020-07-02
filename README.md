@@ -7,31 +7,61 @@ Using python and real time video to read emotions from the face and display effe
 # Features
 プログラムの特徴説明。セールスポイント、差別化等
 
+
 # Requirement
-動作に必要なライブラリ等を列挙
 * Python3.5
-* cv2
-* keras
-* PIL
-* numpy
+* keras 2.0.5
+* tensorflow 1.1.0
+* opencv-python 3.2.0.6
+* pandas 0.19.1
+* PIL 7.1.2
+* numpy 1.13.3
+* scipy 1.1.0
+* h5py 2.7.0
+* statistics 1.0.3.5
+
+Each library may work with versions other than those listed above.
 
 # Installation
-Requirementで列挙したライブラリのインストール方法説明
+>## Running with Miniconda
+>**Environmental Architecture**   
+>Do the following in order.
+~~~  bash
+$ conda create -n ENVIROMENT-NAME python=3.5
+$ conda activate ENVIROMENT-NAME
+$ pip install -r REQUIREMENTS.txt
+~~~
+
 
 # Usage
-DEMOの実行方法や基本的な使用方法を説明する
+>Basic Usage Introduction
+>>**Download the necessary folders.**
+~~~ bash
+$ git clone https://github.com/remi0628/Express_emotions.git
+~~~
+>>**Run the file.**
+~~~ bash
+$ cd Express_emotions/src
+$ python main.py
+~~~
+Let's see your face on the camera.
 
 # Note
 注意点等
 
 # Author
-作成情報
 * Author
   - Shimane Chihiro
   - Okada Ituki
 * Belonging
   - Tokyo University of Technology Department of Media
 * E-mail
+
+# The underlying program
+[Face classification and detection.](https://github.com/oarriaga/face_classification)
+>Real-time face detection and emotion/gender classification using fer2013/IMDB datasets with a keras CNN model and openCV.  
+* IMDB gender classification test accuracy: 96%.  
+* fer2013 emotion classification test accuracy: 66%.
 
 # License
 ライセンス記述
