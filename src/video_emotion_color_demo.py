@@ -17,6 +17,7 @@ from utils.preprocessor import preprocess_input
 # img = cv2.imread('../img/happy.png')
 
 
+
 def emotion_demo():
     # parameters for loading data and images
     detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
@@ -39,6 +40,8 @@ def emotion_demo():
 
     global img
     img = cv2.imread('../img/happy.png')
+    
+    imgr = '../img/happy.png'
 
     # starting video streaming
     cv2.namedWindow('window_frame')
@@ -73,33 +76,66 @@ def emotion_demo():
                 emotion_mode = mode(emotion_window)
             except:
                 continue
-
+            '''
             if emotion_text == 'angry':
                 #img = cv2.imread('../img/angry.png', -1)
                 img = cv2.imread('../img/tuno2.png', -1)
-                cv2.imshow('image', img)
+                imgr = '../img/tuno2.png'
+                #cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((255, 0, 0))
             elif emotion_text == 'sad':
                 img = cv2.imread('../img/sad.png', -1) # 関数にする
-                cv2.imshow('image', img)
+                imgr = '../img/sad.png'
+                #cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((0, 0, 255))
             elif emotion_text == 'happy':
                 img = cv2.imread('../img/happy.png', -1)
-                cv2.imshow('image', img)
+                imgr = '../img/happy.png'
+                #cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((255, 255, 0))
             elif emotion_text == 'surprise':
                 img = cv2.imread('../img/odoroki.png', -1)
-                cv2.imshow('image', img)
+                imgr = '../img/odoroki.png'
+                #cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((0, 255, 255))
             else :
                 color = emotion_probability * np.asarray((0, 255, 0))
+            '''
+            
+            if emotion_text == 'angry':
+                #img = cv2.imread('../img/angry.png', -1)
+                img = cv2.imread('../img/tuno2.png', -1)
+                imgr = '../img/tuno2.png'
+                #cv2.imshow('image', img)
+                color = emotion_probability * np.asarray((255, 0, 0))
+            elif emotion_text == 'sad':
+                img = cv2.imread('../img/shock.png', -1) # 関数にする
+                imgr = '../img/shock.png'
+                #cv2.imshow('image', img)
+                color = emotion_probability * np.asarray((0, 0, 255))
+            elif emotion_text == 'happy':
+                img = cv2.imread('../img/kirakira.png', -1)
+                imgr = '../img/kirakira.png'
+                #cv2.imshow('image', img)
+                color = emotion_probability * np.asarray((255, 255, 0))
+            elif emotion_text == 'surprise':
+                img = cv2.imread('../img/bikkuri.png', -1)
+                imgr = '../img/bikkuri.png'
+                #cv2.imshow('image', img)
+                color = emotion_probability * np.asarray((0, 255, 255))
+            else :
+                img = cv2.imread('../img/toumei.png', -1)
+                imgr = '../img/bikkuri.png'
+                color = emotion_probability * np.asarray((0, 255, 0))
+
+
 
             color = color.astype(int)
             color = color.tolist()
 
             # draw_bounding_box(face_coordinates, rgb_image, color)
             #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
-            rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, emotion_text)
+            rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, imgr)
             draw_text(face_coordinates, rgb_image, emotion_mode,
                       color, 0, -45, 1, 1)
 
@@ -107,10 +143,11 @@ def emotion_demo():
         cv2.waitKey(10)
 
         bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
+        
         cv2.imshow('window_frame', bgr_image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
+        
 
     video_capture.release()
     cv2.destroyAllWindows()

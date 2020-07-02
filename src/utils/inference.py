@@ -18,23 +18,68 @@ def draw_bounding_box(face_coordinates, image_array, color):
     x, y, w, h = face_coordinates
     cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
 
-def draw_bounding_box2(face_coordinates, image_array, color, img, emotion_text):
+'''
+def draw_bounding_box2(face_coordinates, image_array, color, img, imgr):
     x, y, w, h = face_coordinates
     ny = y - 50
     cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
-    if emotion_text == 'angry':
+    if imgr == '../img/tuno2.png':
+        img_face = cv2.resize(img, (w, int(h/5) + 50))  #変更＊　数を一致させる
+        img2 = image_array.copy()
+        img2[ny:ny+int(h/5)+50, x:x+w] = img_face       #変更＊　数を一致させる
+        return img2
+    elif imgr != '../pi.png' and imgr != '../img/tuno2.png':
+        img_face = cv2.resize(img, (w, h + 50))
+        img2 = image_array.copy()
+        img2[ny:ny+h+50, x:x+w] = img_face
+        return img2
+    else:
+        img_face = cv2.resize(img, (int(w/w), int(h/h)))  #変更＊　数を一致させる
+        img2 = image_array.copy()
+        img2[ny:ny+int(h/h), x:x+int(w/w)] = img_face       #変更＊　数を一致させる
+        return img2
+'''
+
+def draw_bounding_box2(face_coordinates, image_array, color, img, imgr):
+    x, y, w, h = face_coordinates
+    ny = y - 50
+    cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    if imgr == '../img/tuno2.png':
         img_face = cv2.resize(img, (w, int(h/5) + 50))  #変更＊　数を一致させる
         img2 = image_array.copy()
         img2[ny:ny+int(h/5)+50, x:x+w] = img_face       #変更＊　数を一致させる
         return img2
     else:
-        img_face = cv2.resize(img, (w, h + 50))
+        img_face = cv2.resize(img, (int(w/5), int(h/5) + 50))  #変更＊　数を一致させる
         img2 = image_array.copy()
-        img2[ny:ny+h+50, x:x+w] = img_face
+        img2[ny:ny+int(h/5)+50, x:x+int(w/5)] = img_face       #変更＊　数を一致させる
         return img2
 
+
+
+
+"""
+def draw_bounding_box2(face_coordinates, image_array, color, img, emotion_text):
+    x, y, w, h = face_coordinates
+    
+    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    if emotion_text == 'happy':
+        img3 =cv2.imread("../../../emotion_gazou/mark_manpu03_ikari.png", -1)
+        img_face = cv2.resize(img, (w, h))
+        img3[y-100:y-100+h, x-100:x-100+w] = img_face
+        return img3
+    else:
+        img_face = cv2.resize(img, (w, h))
+        img2 = image_array.copy()
+        img2[y:y+h, x:x+w] = img_face
+        return img2
+"""
 
 def apply_offsets(face_coordinates, offsets):
     x, y, width, height = face_coordinates
