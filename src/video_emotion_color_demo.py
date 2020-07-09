@@ -9,10 +9,11 @@ from utils.inference import detect_faces
 from utils.inference import draw_text
 from utils.inference import draw_bounding_box
 from utils.inference import draw_bounding_box2
+from utils.inference import draw_bounding_box3
 from utils.inference import apply_offsets
 from utils.inference import load_detection_model
 from utils.preprocessor import preprocess_input
-
+from image_processing import image_resize
 
 # img = cv2.imread('../img/happy.png')
 
@@ -49,8 +50,11 @@ def emotion_demo():
     while True:
         bgr_image = video_capture.read()[1]
         gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
-        rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+        rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGRA2RGBA)
         faces = detect_faces(face_detection, gray_image)
+        # キャプチャフレームの取得
+        frame = video_capture.read()[1]
+        overlay_pic = frame
 
         for face_coordinates in faces:
 
@@ -125,7 +129,7 @@ def emotion_demo():
                 color = emotion_probability * np.asarray((0, 255, 255))
             else :
                 img = cv2.imread('../img/toumei.png', -1)
-                imgr = '../img/bikkuri.png'
+                imgr = '../img/toumei.png'
                 color = emotion_probability * np.asarray((0, 255, 0))
 
 
@@ -133,21 +137,32 @@ def emotion_demo():
             color = color.astype(int)
             color = color.tolist()
 
+            '''
             # draw_bounding_box(face_coordinates, rgb_image, color)
             #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
             rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, imgr)
             draw_text(face_coordinates, rgb_image, emotion_mode,
                       color, 0, -45, 1, 1)
-
+            '''
+            overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, imgr, frame)
+            rgb_image = overlay_pic
+            overlay_pic = cv2.cvtColor(overlay_pic, cv2.COLOR_RGB2BGR)
+            
         cv2.imshow('image2', img)
         cv2.waitKey(10)
-
-        bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
         
-        cv2.imshow('window_frame', bgr_image)
+
+        # bgr_image = cv2.cvtColor(overlay_pic, cv2.COLOR_RGB2BGR)
+       
+        
+
+
+        cv2.imshow('window_frame', overlay_pic)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
 
     video_capture.release()
     cv2.destroyAllWindows()
+
+
