@@ -73,13 +73,15 @@ def emotion_demo():
                 continue
 
             if emotion_text == 'angry':
-                img = cv2.imread('../img/angry.png', -1)
+                #img = cv2.imread('../img/angry.png', -1)
+                img = cv2.imread('../img/tuno2.png', -1)
                 color = emotion_probability * np.asarray((255, 0, 0))
             elif emotion_text == 'sad':
                 img = cv2.imread('../img/sad.png', -1) # 関数にする
                 color = emotion_probability * np.asarray((0, 0, 255))
             elif emotion_text == 'happy':
                 img = cv2.imread('../img/happy.png', -1)
+                img = cv2.imread('../img/tuno2.png', -1)
                 color = emotion_probability * np.asarray((255, 255, 0))
             elif emotion_text == 'surprise':
                 img = cv2.imread('../img/odoroki.png', -1)
@@ -93,7 +95,8 @@ def emotion_demo():
             if flag == 0:
                     draw_bounding_box(face_coordinates, rgb_image, color)
             elif flag == 1:
-                    rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
+                    #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
+                    rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, emotion_text)
             draw_text(face_coordinates, rgb_image, emotion_mode,
                       color, 0, -45, 1, 1)
 

@@ -18,18 +18,22 @@ def draw_bounding_box(face_coordinates, image_array, color):
     x, y, w, h = face_coordinates
     cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
 
-def draw_bounding_box2(face_coordinates, image_array, color, img):
+def draw_bounding_box2(face_coordinates, image_array, color, img, emotion_text):
     x, y, w, h = face_coordinates
-    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
+    ny = y - 50
+    cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    if(w < 150):
-        img_face = cv2.resize(img, (w, h))
+    
+    if emotion_text == 'angry' or emotion_text == 'happy':
+        img_face = cv2.resize(img, (w, int(h/5) + 50))  #変更＊　数を一致させる
+        img2 = image_array.copy()
+        img2[ny:ny+int(h/5)+50, x:x+w] = img_face       #変更＊　数を一致させる
+        return img2
     else:
-        img_face = cv2.resize(img, (w, h))
-    img2 = image_array.copy()
-    img2[y:y+h, x:x+w] = img_face
-    print("x:", x, "y:", y , "w:", w, "h:", h)
-    return img2
+        img_face = cv2.resize(img, (w, h + 50))
+        img2 = image_array.copy()
+        img2[ny:ny+h+50, x:x+w] = img_face
+        return img2
 
 
 def apply_offsets(face_coordinates, offsets):
