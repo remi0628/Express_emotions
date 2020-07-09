@@ -34,8 +34,9 @@ def emotion_demo():
     # starting lists for calculating modes
     emotion_window = []
 
-    global img
+    global img, flag
     img = cv2.imread('../img/happy.png')
+    flag = 0
 
     # starting video streaming
     cv2.namedWindow('window_frame')
@@ -73,19 +74,15 @@ def emotion_demo():
 
             if emotion_text == 'angry':
                 img = cv2.imread('../img/angry.png', -1)
-                cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((255, 0, 0))
             elif emotion_text == 'sad':
                 img = cv2.imread('../img/sad.png', -1) # 関数にする
-                cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((0, 0, 255))
             elif emotion_text == 'happy':
                 img = cv2.imread('../img/happy.png', -1)
-                cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((255, 255, 0))
             elif emotion_text == 'surprise':
                 img = cv2.imread('../img/odoroki.png', -1)
-                cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((0, 255, 255))
             else:
                 color = emotion_probability * np.asarray((0, 255, 0))
@@ -93,17 +90,27 @@ def emotion_demo():
             color = color.astype(int)
             color = color.tolist()
 
-            # draw_bounding_box(face_coordinates, rgb_image, color)
-            rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
+            if flag == 0:
+                    draw_bounding_box(face_coordinates, rgb_image, color)
+            elif flag == 1:
+                    rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
             draw_text(face_coordinates, rgb_image, emotion_mode,
                       color, 0, -45, 1, 1)
 
-        cv2.imshow('image', img)
+        print(flag)
+        if flag == 0:
+            cv2.imshow('image', img)
+        elif flag == 1:
+            cv2.destroyWindow('image')
         cv2.waitKey(10)
 
         bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
         cv2.imshow('window_frame', bgr_image)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('z'):
+            flag = 0
+        elif cv2.waitKey(1) & 0xFF == ord('x'):
+            flag = 1
+        elif cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
 
