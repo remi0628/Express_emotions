@@ -31,19 +31,6 @@ def main():
 
 
 # 画像リサイズ
-'''
-def image_resize(image):
-    img = image
-    height, width = img.shape[:2]
-    
-    if 500 <= height or 500 <= width:
-    img = cv2.resize(img , (int(width*0.5), int(height*0.5)))
-    return img
-'''
-
-
-
-#パターン2
 def image_resize(image):
     img = image
     height, width = img.shape[:2]

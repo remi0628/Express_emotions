@@ -39,9 +39,10 @@ def emotion_demo():
     # starting lists for calculating modes
     emotion_window = []
 
-    global img
+    global img, flag
     img = cv2.imread('../img/happy.png')
-    
+    flag = 0
+
     imgr = '../img/happy.png'
 
     # starting video streaming
@@ -80,11 +81,10 @@ def emotion_demo():
                 emotion_mode = mode(emotion_window)
             except:
                 continue
-            '''
+            
             if emotion_text == 'angry':
-                #img = cv2.imread('../img/angry.png', -1)
-                img = cv2.imread('../img/tuno2.png', -1)
-                imgr = '../img/tuno2.png'
+                img = cv2.imread('../img/angry.png', -1)
+                imgr = '../img/angry.png'
                 #cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((255, 0, 0))
             elif emotion_text == 'sad':
@@ -104,12 +104,12 @@ def emotion_demo():
                 color = emotion_probability * np.asarray((0, 255, 255))
             else :
                 color = emotion_probability * np.asarray((0, 255, 0))
-            '''
             
+            '''
             if emotion_text == 'angry':
                 #img = cv2.imread('../img/angry.png', -1)
-                img = cv2.imread('../img/tuno2.png', -1)
-                imgr = '../img/tuno2.png'
+                img = cv2.imread('../img/ikari.png', -1)
+                imgr = '../img/ikari.png'
                 #cv2.imshow('image', img)
                 color = emotion_probability * np.asarray((255, 0, 0))
             elif emotion_text == 'sad':
@@ -131,34 +131,45 @@ def emotion_demo():
                 img = cv2.imread('../img/toumei.png', -1)
                 imgr = '../img/toumei.png'
                 color = emotion_probability * np.asarray((0, 255, 0))
-
+            '''
 
 
             color = color.astype(int)
             color = color.tolist()
 
-            '''
-            # draw_bounding_box(face_coordinates, rgb_image, color)
-            #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
-            rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, imgr)
-            draw_text(face_coordinates, rgb_image, emotion_mode,
-                      color, 0, -45, 1, 1)
+            if flag == 0:
+                draw_bounding_box(face_coordinates, rgb_image, color)
+            elif flag == 1:
+                # draw_bounding_box(face_coordinates, rgb_image, color)
+                #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
+                rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, imgr)
+                draw_text(face_coordinates, rgb_image, emotion_mode,
+                        color, 0, -45, 1, 1)
+                bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
             '''
             overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, imgr, frame)
             rgb_image = overlay_pic
+            draw_text(face_coordinates, rgb_image, emotion_mode,
+                      color, 0, -45, 1, 1)
             overlay_pic = cv2.cvtColor(overlay_pic, cv2.COLOR_RGB2BGR)
-            
-        cv2.imshow('image2', img)
+            '''
+        
+
+        print(flag)
+        if flag == 0:
+            cv2.imshow('image', img)
+        elif flag == 1:
+            cv2.destroyWindow('image')
         cv2.waitKey(10)
-        
-
-        # bgr_image = cv2.cvtColor(overlay_pic, cv2.COLOR_RGB2BGR)
        
-        
 
+        cv2.imshow('window_frame', bgr_image)
 
-        cv2.imshow('window_frame', overlay_pic)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('z'):
+            flag = 0
+        elif cv2.waitKey(1) & 0xFF == ord('x'):
+            flag = 1
+        elif cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
 

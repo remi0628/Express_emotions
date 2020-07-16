@@ -25,47 +25,26 @@ def draw_bounding_box2(face_coordinates, image_array, color, img, imgr):
     x, y, w, h = face_coordinates
     ny = y - 50
     cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
     
-    if imgr == '../img/tuno2.png':
-        img_face = cv2.resize(img, (w, int(h/5) + 50))  #変更＊　数を一致させる
-        img2 = image_array.copy()
-        img2[ny:ny+int(h/5)+50, x:x+w] = img_face       #変更＊　数を一致させる
-        return img2
-    elif imgr != '../pi.png' and imgr != '../img/tuno2.png':
-        img_face = cv2.resize(img, (w, h + 50))
-        img2 = image_array.copy()
-        img2[ny:ny+h+50, x:x+w] = img_face
-        return img2
-    else:
-        img_face = cv2.resize(img, (int(w/w), int(h/h)))  #変更＊　数を一致させる
-        img2 = image_array.copy()
-        img2[ny:ny+int(h/h), x:x+int(w/w)] = img_face       #変更＊　数を一致させる
-        return img2
+    img_face = cv2.resize(img, (int(w/w), int(h/h)))  #変更＊　数を一致させる
+    img2 = image_array.copy()
+    img2[ny:ny+int(h/h), x:x+int(w/w)] = img_face       #変更＊　数を一致させる
+    return img2
 
 
 def draw_bounding_box3(face_coordinates, image_array, color, img, imgr, frame):
     x, y, w, h = face_coordinates
     ny = y - 50
-    cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
+    # cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
+        
+    img_face = cv2.resize(img, (int(w/5), int(h/5) + 50))  #変更＊　数を一致させる
+    img2 = image_array.copy()
+    img2[ny:ny+int(h/5)+50, x:x+int(w/5)] = img_face       #変更＊　数を一致させる
     
-    if imgr == '../img/tuno2.png':
-        img_face = cv2.resize(img, (w, int(h/5) + 50))  #変更＊　数を一致させる
-        img2 = image_array.copy()
-        img2[ny:ny+int(h/5)+50, x:x+w] = img_face       #変更＊　数を一致させる
-        
-
-        img3 = overlayImage(frame, img2, (0, 0))
-        return img3
-    else:
-        img_face = cv2.resize(img, (int(w/5), int(h/5) + 50))  #変更＊　数を一致させる
-        img2 = image_array.copy()
-        img2[ny:ny+int(h/5)+50, x:x+int(w/5)] = img_face       #変更＊　数を一致させる
-        
-
-        img3 = overlayImage(frame, img2, (0, 0))
-        return img3
+    img3 = overlayImage(frame, img2, (0, 0))
+    return img3
 
 
 
