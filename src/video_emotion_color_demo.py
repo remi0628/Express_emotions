@@ -20,6 +20,17 @@ def emotion_demo():
     emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
     emotion_labels = get_labels('fer2013')
 
+    # 目のカスケードファイル追加
+    lefteyecc__path = "../trained_models/detection_models/haarcascade_lefteye_2splits.xml"
+    righteyecc_path = "../trained_models/detection_models/haarcascade_righteye_2splits.xml"
+    nose_path = "../trained_models/detection_models/data_haarcascades_haarcascade_mcs_nose.xml"
+    lefteyecc = cv2.CascadeClassifier(lefteyecc__path)
+    righteyecc = cv2.CascadeClassifier(righteyecc_path)
+    nose = cv2.CascadeClassifier(nose_path)
+    lex = 0; ley = 0; lew = 0; leh = 0
+    rex = 0; rey = 0; rew = 0; reh = 0
+    nox = 0; noy = 0; now = 0; noh = 0
+
     # hyper-parameters for bounding boxes shape
     frame_window = 10
     emotion_offsets = (20, 40)
@@ -40,7 +51,7 @@ def emotion_demo():
 
     # starting video streaming
     cv2.namedWindow('window_frame')
-    video_capture = cv2.VideoCapture(0) # 0は内蔵カメラ, 1はUSBカメラ
+    video_capture = cv2.VideoCapture(1) # 0は内蔵カメラ, 1はUSBカメラ
     while True:
         bgr_image = video_capture.read()[1]
         gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
@@ -48,6 +59,11 @@ def emotion_demo():
         faces = detect_faces(face_detection, gray_image)
 
         for face_coordinates in faces:
+            #
+            (x,y,w,h) = face_coordinates
+            face = img[y:y+h,x:x+w]
+            # 目や鼻認識用
+            video_face = gray_image[y:y+h,x:x+w]
 
             x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
             gray_face = gray_image[y1:y2, x1:x2]
@@ -55,6 +71,29 @@ def emotion_demo():
                 gray_face = cv2.resize(gray_face, (emotion_target_size))
             except:
                 continue
+
+
+            # 左目の検出
+            lefteyerects = lefteyecc.detectMultiScale(video_face)
+            for lefteyerect in lefteyerects:
+                (lex,ley,lew,leh) = lefteyerect
+                #color = emotion_probability * np.asarray((255, 0, 0))
+                #draw_bounding_box(lefteyerect, rgb_image, color)
+                print("左目：", lex,ley,lew,leh)
+
+            # 右目の検出
+            righteyerects = righteyecc.detectMultiScale(video_face)
+            for righteyerect in righteyerects:
+                (rex,rey,rew,reh) = righteyerect
+                print("右目：", rex,rey,rew,reh)
+
+            # 鼻の検出
+            noserects = nose.detectMultiScale(video_face)
+            for noserect in noserects:
+                (nox,noy,now,noh) = noserect
+                cv2.rectangle(gray_face, (nox, noy), (nox + now, noy + noh), (0, 255, 0), 2)
+                print("鼻：", nox,noy,now,noh)
+
 
             gray_face = preprocess_input(gray_face, True)
             gray_face = np.expand_dims(gray_face, 0)
@@ -92,15 +131,14 @@ def emotion_demo():
             color = color.astype(int)
             color = color.tolist()
 
-            if flag == 0:
+            if flag == 0: # 別ウィンドウに画像を表示
                     draw_bounding_box(face_coordinates, rgb_image, color)
-            elif flag == 1:
+            elif flag == 1: # リアルタイムで顔に画像を載せる
                     #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
                     rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, emotion_text)
             draw_text(face_coordinates, rgb_image, emotion_mode,
                       color, 0, -45, 1, 1)
 
-        print(flag)
         if flag == 0:
             cv2.imshow('image', img)
         elif flag == 1:
