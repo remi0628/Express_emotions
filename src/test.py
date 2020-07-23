@@ -1,186 +1,55 @@
-from statistics import mode
-
 import cv2
-from keras.models import load_model
+import matplotlib.pyplot as plt
 import numpy as np
+from keras.preprocessing import image
 
-from utils.datasets import get_labels
-from utils.inference import detect_faces
-from utils.inference import draw_text
-from utils.inference import draw_bounding_box
-from utils.inference import draw_bounding_box2
-from utils.inference import draw_bounding_box3
-from utils.inference import apply_offsets
-from utils.inference import load_detection_model
-from utils.preprocessor import preprocess_input
-from image_processing import image_resize
+def load_image(image_path, grayscale=False, target_size=None):
+    pil_image = image.load_img(image_path, grayscale, target_size)
+    return image.img_to_array(pil_image)
 
-# img = cv2.imread('../img/happy.png')
+def load_detection_model(model_path):
+    detection_model = cv2.CascadeClassifier(model_path)
+    return detection_model
 
+def detect_faces(detection_model, gray_image_array):
+    return detection_model.detectMultiScale(gray_image_array, 1.3, 5)
 
+def draw_bounding_box(face_coordinates, image_array, color):
+    x, y, w, h = face_coordinates
+    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
 
-def emotion_demo():
-    # parameters for loading data and images
-    detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
-    emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
-    emotion_labels = get_labels('fer2013')
-
-    # hyper-parameters for bounding boxes shape
-    frame_window = 10
-    emotion_offsets = (20, 40)
-
-    # loading models
-    face_detection = load_detection_model(detection_model_path)
-    emotion_classifier = load_model(emotion_model_path, compile=False)
-
-    # getting input model shapes for inference
-    emotion_target_size = emotion_classifier.input_shape[1:3]
-
-    # starting lists for calculating modes
-    emotion_window = []
-
-    global img, flag
-    img = cv2.imread('../img/happy.png')
-    flag = 0
-
-    imgr = '../img/happy.png'
-
-    # starting video streaming
-    cv2.namedWindow('window_frame')
-    video_capture = cv2.VideoCapture(1) # 0は内蔵カメラ, 1はUSBカメラ
-    while True:
-        bgr_image = video_capture.read()[1]
-        gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
-        rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGRA2RGBA)
-        faces = detect_faces(face_detection, gray_image)
-        # キャプチャフレームの取得
-        frame = video_capture.read()[1]
-        overlay_pic = frame
-
-        for face_coordinates in faces:
-
-            x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
-            gray_face = gray_image[y1:y2, x1:x2]
-            try:
-                gray_face = cv2.resize(gray_face, (emotion_target_size))
-            except:
-                continue
-
-            gray_face = preprocess_input(gray_face, True)
-            gray_face = np.expand_dims(gray_face, 0)
-            gray_face = np.expand_dims(gray_face, -1)
-            emotion_prediction = emotion_classifier.predict(gray_face)
-            emotion_probability = np.max(emotion_prediction)
-            emotion_label_arg = np.argmax(emotion_prediction)
-            emotion_text = emotion_labels[emotion_label_arg]
-            emotion_window.append(emotion_text)
-
-            if len(emotion_window) > frame_window:
-                emotion_window.pop(0)
-            try:
-                emotion_mode = mode(emotion_window)
-            except:
-                continue
-            
-            if emotion_text == 'angry':
-                img = cv2.imread('../img/angry.png', -1)
-                imgr = '../img/angry.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 0, 0))
-            elif emotion_text == 'sad':
-                img = cv2.imread('../img/sad.png', -1) # 関数にする
-                imgr = '../img/sad.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 0, 255))
-            elif emotion_text == 'happy':
-                img = cv2.imread('../img/happy.png', -1)
-                imgr = '../img/happy.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 255, 0))
-            elif emotion_text == 'surprise':
-                img = cv2.imread('../img/odoroki.png', -1)
-                imgr = '../img/odoroki.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 255, 255))
-            else :
-                color = emotion_probability * np.asarray((0, 255, 0))
-            
-            '''
-            if emotion_text == 'angry':
-                #img = cv2.imread('../img/angry.png', -1)
-                img = cv2.imread('../img/ikari.png', -1)
-                imgr = '../img/ikari.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 0, 0))
-            elif emotion_text == 'sad':
-                img = cv2.imread('../img/shock.png', -1) # 関数にする
-                imgr = '../img/shock.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 0, 255))
-            elif emotion_text == 'happy':
-                img = cv2.imread('../img/kirakira.png', -1)
-                imgr = '../img/kirakira.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 255, 0))
-            elif emotion_text == 'surprise':
-                img = cv2.imread('../img/bikkuri.png', -1)
-                imgr = '../img/bikkuri.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 255, 255))
-            else :
-                img = cv2.imread('../img/toumei.png', -1)
-                imgr = '../img/toumei.png'
-                color = emotion_probability * np.asarray((0, 255, 0))
-            '''
+def draw_bounding_box2(face_coordinates, image_array, color, img, emotion_text):
+    x, y, w, h = face_coordinates
+    ny = y - 50
+    cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    if emotion_text == 'angry' or emotion_text == 'happy':
+        img_face = cv2.resize(img, (w, int(h/5) + 50))  #変更＊　数を一致させる
+        img2 = image_array.copy()
+        img2[ny:ny+int(h/5)+50, x:x+w] = img_face       #変更＊　数を一致させる
+        return img2
+    else:
+        img_face = cv2.resize(img, (w, h + 50))
+        img2 = image_array.copy()
+        img2[ny:ny+h+50, x:x+w] = img_face
+        return img2
 
 
-            color = color.astype(int)
-            color = color.tolist()
+def apply_offsets(face_coordinates, offsets):
+    x, y, width, height = face_coordinates
+    x_off, y_off = offsets
+    return (x - x_off, x + width + x_off, y - y_off, y + height + y_off)
 
-            if flag == 0:
-                draw_bounding_box(face_coordinates, rgb_image, color)
-            elif flag == 1:
-                # draw_bounding_box(face_coordinates, rgb_image, color)
-                #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
-                rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, imgr)
-            ### 追加
-            elif flag == 2:
-                overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, imgr, frame)
-                rgb_image = overlay_pic       
-            ### 以下2行が1インデント分内側に入っていた
-                draw_text(face_coordinates, rgb_image, emotion_mode, color, 0, -45, 1, 1)
-                bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
-            '''
-            overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, imgr, frame)
-            rgb_image = overlay_pic
-            draw_text(face_coordinates, rgb_image, emotion_mode,
-                      color, 0, -45, 1, 1)
-            overlay_pic = cv2.cvtColor(overlay_pic, cv2.COLOR_RGB2BGR)
-            '''
-        
+def draw_text(coordinates, image_array, text, color, x_offset=0, y_offset=0,
+                                                font_scale=2, thickness=2):
+    x, y = coordinates[:2]
+    cv2.putText(image_array, text, (x + x_offset, y + y_offset),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                font_scale, color, thickness, cv2.LINE_AA)
 
-        print(flag)
-        if flag == 0:
-            cv2.imshow('image', img)
-        elif flag == 1 or flag == 2: ### 追加
-            cv2.destroyWindow('image')
-        cv2.waitKey(10)
-       
-
-        cv2.imshow('window_frame', bgr_image)
-
-        if cv2.waitKey(1) & 0xFF == ord('z'):
-            flag = 0
-        elif cv2.waitKey(1) & 0xFF == ord('x'):
-            flag = 1
-        ### 追加
-        elif cv2.waitKey(1) & 0xFF == ord('c'):
-            flag = 2
-        elif cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-        
-
-    video_capture.release()
-    cv2.destroyAllWindows()
-
+def get_colors(num_classes):
+    colors = plt.cm.hsv(np.linspace(0, 1, num_classes)).tolist()
+    colors = np.asarray(colors) * 255
+    return colors
 
