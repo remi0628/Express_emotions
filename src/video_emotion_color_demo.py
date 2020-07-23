@@ -3,6 +3,7 @@ from statistics import mode
 import cv2
 from keras.models import load_model
 import numpy as np
+import dlib
 
 from utils.datasets import get_labels
 from utils.inference import detect_faces
@@ -12,6 +13,7 @@ from utils.inference import draw_bounding_box2
 from utils.inference import apply_offsets
 from utils.inference import load_detection_model
 from utils.preprocessor import preprocess_input
+
 
 
 def emotion_demo():
@@ -31,6 +33,9 @@ def emotion_demo():
     rex = 0; rey = 0; rew = 0; reh = 0
     nox = 0; noy = 0; now = 0; noh = 0
 
+    # dlib
+    dlib_ini()
+
     # hyper-parameters for bounding boxes shape
     frame_window = 10
     emotion_offsets = (20, 40)
@@ -45,9 +50,13 @@ def emotion_demo():
     # starting lists for calculating modes
     emotion_window = []
 
-    global img, flag
+    global img, flag, slp_count
     img = cv2.imread('../img/happy.png')
     flag = 0
+    slp_count = 0
+
+    # dlib用グローバル変数
+    global gray_image, rgb_image
 
     # starting video streaming
     cv2.namedWindow('window_frame')
@@ -59,10 +68,8 @@ def emotion_demo():
         faces = detect_faces(face_detection, gray_image)
 
         for face_coordinates in faces:
-            #
-            (x,y,w,h) = face_coordinates
-            face = img[y:y+h,x:x+w]
             # 目や鼻認識用
+            (x,y,w,h) = face_coordinates
             video_face = gray_image[y:y+h,x:x+w]
 
             x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
@@ -72,27 +79,38 @@ def emotion_demo():
             except:
                 continue
 
+            ''' cv2 目鼻の検出
+            if slp_count >= 5:
+                # 左目の検出
+                lefteyerects = lefteyecc.detectMultiScale(video_face)
+                for lefteyerect in lefteyerects:
+                    (lex,ley,lew,leh) = lefteyerect
+                    #color = emotion_probability * np.asarray((255, 0, 0))
+                    #draw_bounding_box(lefteyerect, rgb_image, color)
+                    print("左目：", lex,ley,lew,leh)
 
-            # 左目の検出
-            lefteyerects = lefteyecc.detectMultiScale(video_face)
-            for lefteyerect in lefteyerects:
-                (lex,ley,lew,leh) = lefteyerect
-                #color = emotion_probability * np.asarray((255, 0, 0))
-                #draw_bounding_box(lefteyerect, rgb_image, color)
-                print("左目：", lex,ley,lew,leh)
+                # 右目の検出
+                righteyerects = righteyecc.detectMultiScale(video_face)
+                for righteyerect in righteyerects:
+                    (rex,rey,rew,reh) = righteyerect
+                    rexx = int(rex + x)
+                    reyy = int(rey + y - reh/2 + 5)
+                    cv2.rectangle(rgb_image, (rexx, reyy), (rexx + rew, reyy + reh), (0, 255, 0), 2)
+                    print("右目：", rex,rey,rew,reh)
 
-            # 右目の検出
-            righteyerects = righteyecc.detectMultiScale(video_face)
-            for righteyerect in righteyerects:
-                (rex,rey,rew,reh) = righteyerect
-                print("右目：", rex,rey,rew,reh)
+                # 鼻の検出
+                noserects = nose.detectMultiScale(video_face)
+                for noserect in noserects:
+                    (nox,noy,now,noh) = noserect
+                    noxx = int(nox + x)
+                    noyy = int(noy + y - noh/2 + 5)
+                    cv2.rectangle(rgb_image, (noxx, noyy), (noxx + now, noyy + noh), (0, 255, 0), 2)
+                    print("鼻：", noxx,noyy,now,noh)
+                    slp_count = 0
+            slp_count += 1
+            '''
 
-            # 鼻の検出
-            noserects = nose.detectMultiScale(video_face)
-            for noserect in noserects:
-                (nox,noy,now,noh) = noserect
-                cv2.rectangle(gray_face, (nox, noy), (nox + now, noy + noh), (0, 255, 0), 2)
-                print("鼻：", nox,noy,now,noh)
+            coordinate_detection()
 
 
             gray_face = preprocess_input(gray_face, True)
@@ -157,3 +175,47 @@ def emotion_demo():
 
     video_capture.release()
     cv2.destroyAllWindows()
+
+
+
+## 以下dlib使用 59行目のグローバル変数追加必須
+## http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 このURLからdatファイルをダウンロード
+def dlib_ini():
+    # Dlib
+    global CASCADE, PREDICTOR
+    CASCADE_PATH = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
+    CASCADE = cv2.CascadeClassifier(CASCADE_PATH)
+    LEARNED_MODEL_PATH ="../trained_models/dlib_model/shape_predictor_68_face_landmarks.dat"
+    PREDICTOR = dlib.shape_predictor(LEARNED_MODEL_PATH)
+
+def coordinate_detection():
+    landmarks = facemark(gray_image)#ランドマーク検出
+    # ランドマークの描画
+    mark_nose = landmarks[0][33:34]
+    mark_left_eye = landmarks[0][36:37]
+    mark_right_eye = landmarks[0][45:46]
+    #mark_list = (mark_nose, mark_left_eye, mark_right_eye)
+    #list(itertools.chain.from_iterable(mark_list))
+    cv2.drawMarker(rgb_image, (mark_nose[0][0], mark_nose[0][1]), (21, 255, 12))
+    cv2.drawMarker(rgb_image, (mark_left_eye[0][0], mark_left_eye[0][1]), (21, 255, 12))
+    cv2.drawMarker(rgb_image, (mark_right_eye[0][0], mark_right_eye[0][1]), (21, 255, 12))
+    #print(mark_list)
+
+def face_position(gray_img):
+    faces = CASCADE.detectMultiScale(gray_img, minSize=(100, 100))
+    return faces
+
+def facemark(gray_img):
+    faces_roi = face_position(gray_img)
+    landmarks = []
+
+    for face in faces_roi:
+        detector = dlib.get_frontal_face_detector()
+        rects = detector(gray_img, 1)
+        landmarks = []
+
+        for rect in rects:
+            landmarks.append(
+                np.array([[p.x, p.y] for p in PREDICTOR(gray_img, rect).parts()]))
+
+    return landmarks
