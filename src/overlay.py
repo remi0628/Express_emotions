@@ -27,30 +27,3 @@ def overlayImage(src, overlay, location):
 
     # OpenCV形式に変換
     return cv2.cvtColor(np.asarray(result_image), cv2.COLOR_RGBA2BGRA)
-
-
-
-
-
-'''    
-# 画像の読み込み
-img_map = cv2.imread("../img/green_back.jpg")
-img_sorami = cv2.imread("../img/odoroki.png", cv2.IMREAD_UNCHANGED)
-
-# 画像のリサイズ
-nimage_map = image_resize(img_map)
-nimage_sorami = image_resize(img_sorami)
-
-# 画像のオーバーレイ
-image = overlayImage(nimage_map, nimage_sorami, (0, 0))
-
-# ウィンドウ表示
-cv2.namedWindow("image03", cv2.WINDOW_AUTOSIZE)
-cv2.imshow("image03", image)
-cv2.waitKey(0)
-'''
-
-
-
-
-

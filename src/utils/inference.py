@@ -21,19 +21,18 @@ def draw_bounding_box(face_coordinates, image_array, color):
     cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
 
 
-def draw_bounding_box2(face_coordinates, image_array, color, img, imgr):
+def draw_bounding_box2(face_coordinates, image_array, color, img):
     x, y, w, h = face_coordinates
-    ny = y - 50
-    cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
+    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
     
-    img_face = cv2.resize(img, (int(w/w), int(h/h)))  #変更＊　数を一致させる
+    img_face = cv2.resize(img, (int(w), int(h)))  #変更＊　数を一致させる
     img2 = image_array.copy()
-    img2[ny:ny+int(h/h), x:x+int(w/w)] = img_face       #変更＊　数を一致させる
+    img2[y:y+int(h), x:x+int(w)] = img_face       #変更＊　数を一致させる
     return img2
 
 
-def draw_bounding_box3(face_coordinates, image_array, color, img, imgr, frame):
+def draw_bounding_box3(face_coordinates, image_array, color, img, frame):
     x, y, w, h = face_coordinates
     ny = y - 50
     # cv2.rectangle(image_array, (x, ny), (x + w, y + h), color, 2)
@@ -45,27 +44,6 @@ def draw_bounding_box3(face_coordinates, image_array, color, img, imgr, frame):
     
     img3 = overlayImage(frame, img2, (0, 0))
     return img3
-
-
-
-"""
-def draw_bounding_box2(face_coordinates, image_array, color, img, emotion_text):
-    x, y, w, h = face_coordinates
-    
-    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
-    if emotion_text == 'happy':
-        img3 =cv2.imread("../../../emotion_gazou/mark_manpu03_ikari.png", -1)
-        img_face = cv2.resize(img, (w, h))
-        img3[y-100:y-100+h, x-100:x-100+w] = img_face
-        return img3
-    else:
-        img_face = cv2.resize(img, (w, h))
-        img2 = image_array.copy()
-        img2[y:y+h, x:x+w] = img_face
-        return img2
-"""
 
 def apply_offsets(face_coordinates, offsets):
     x, y, width, height = face_coordinates

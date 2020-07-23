@@ -43,8 +43,7 @@ def emotion_demo():
     img = cv2.imread('../img/happy.png')
     flag = 0
 
-    imgr = '../img/happy.png'
-
+    
     # starting video streaming
     cv2.namedWindow('window_frame')
     video_capture = cv2.VideoCapture(0) # 0は内蔵カメラ, 1はUSBカメラ
@@ -82,56 +81,40 @@ def emotion_demo():
             except:
                 continue
             
-            if emotion_text == 'angry':
-                img = cv2.imread('../img/angry.png', -1)
-                imgr = '../img/angry.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 0, 0))
-            elif emotion_text == 'sad':
-                img = cv2.imread('../img/sad.png', -1) # 関数にする
-                imgr = '../img/sad.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 0, 255))
-            elif emotion_text == 'happy':
-                img = cv2.imread('../img/happy.png', -1)
-                imgr = '../img/happy.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 255, 0))
-            elif emotion_text == 'surprise':
-                img = cv2.imread('../img/odoroki.png', -1)
-                imgr = '../img/odoroki.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 255, 255))
-            else :
-                color = emotion_probability * np.asarray((0, 255, 0))
-            
-            '''
-            if emotion_text == 'angry':
-                #img = cv2.imread('../img/angry.png', -1)
-                img = cv2.imread('../img/ikari.png', -1)
-                imgr = '../img/ikari.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 0, 0))
-            elif emotion_text == 'sad':
-                img = cv2.imread('../img/shock.png', -1) # 関数にする
-                imgr = '../img/shock.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 0, 255))
-            elif emotion_text == 'happy':
-                img = cv2.imread('../img/kirakira.png', -1)
-                imgr = '../img/kirakira.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((255, 255, 0))
-            elif emotion_text == 'surprise':
-                img = cv2.imread('../img/bikkuri.png', -1)
-                imgr = '../img/bikkuri.png'
-                #cv2.imshow('image', img)
-                color = emotion_probability * np.asarray((0, 255, 255))
-            else :
-                img = cv2.imread('../img/toumei.png', -1)
-                imgr = '../img/toumei.png'
-                color = emotion_probability * np.asarray((0, 255, 0))
-            '''
+
+
+            if flag == 0 or flag == 1:
+                if emotion_text == 'angry':
+                    img = cv2.imread('../img/angry.png', -1)
+                    color = emotion_probability * np.asarray((255, 0, 0))
+                elif emotion_text == 'sad':
+                    img = cv2.imread('../img/sad.png', -1) # 関数にする
+                    color = emotion_probability * np.asarray((0, 0, 255))
+                elif emotion_text == 'happy':
+                    img = cv2.imread('../img/happy.png', -1)
+                    color = emotion_probability * np.asarray((255, 255, 0))
+                elif emotion_text == 'surprise':
+                    img = cv2.imread('../img/odoroki.png', -1)
+                    color = emotion_probability * np.asarray((0, 255, 255))
+                else :
+                    color = emotion_probability * np.asarray((0, 255, 0))
+            else:    
+                if emotion_text == 'angry':
+                    img = cv2.imread('../img/ikari.png', -1)
+                    color = emotion_probability * np.asarray((255, 0, 0))
+                elif emotion_text == 'sad':
+                    img = cv2.imread('../img/shock.png', -1) 
+                    color = emotion_probability * np.asarray((0, 0, 255))
+                elif emotion_text == 'happy':
+                    img = cv2.imread('../img/kirakira.png', -1)
+                    color = emotion_probability * np.asarray((255, 255, 0))
+                elif emotion_text == 'surprise':
+                    img = cv2.imread('../img/bikkuri.png', -1)
+                    color = emotion_probability * np.asarray((0, 255, 255))
+                else :
+                    img = cv2.imread('../img/toumei.png', -1)
+                    color = emotion_probability * np.asarray((0, 255, 0))
+                
 
 
             color = color.astype(int)
@@ -140,35 +123,33 @@ def emotion_demo():
             if flag == 0:
                 draw_bounding_box(face_coordinates, rgb_image, color)
             elif flag == 1:
-                # draw_bounding_box(face_coordinates, rgb_image, color)
-                #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
-                rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, imgr)
-                draw_text(face_coordinates, rgb_image, emotion_mode,
-                        color, 0, -45, 1, 1)
-                bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
-            '''
-            overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, imgr, frame)
-            rgb_image = overlay_pic
-            draw_text(face_coordinates, rgb_image, emotion_mode,
-                      color, 0, -45, 1, 1)
-            overlay_pic = cv2.cvtColor(overlay_pic, cv2.COLOR_RGB2BGR)
-            '''
+                rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)              
+            elif flag == 2:
+                overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, frame)
+                rgb_image = overlay_pic       
+            
+            draw_text(face_coordinates, rgb_image, emotion_mode, color, 0, -45, 1, 1)
+            bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)    
         
-
+    
         print(flag)
         if flag == 0:
+            img = image_resize(img)
             cv2.imshow('image', img)
-        elif flag == 1:
+        elif flag == 1 or flag == 2:
             cv2.destroyWindow('image')
         cv2.waitKey(10)
        
 
         cv2.imshow('window_frame', bgr_image)
+        # cv2.imshow('own_window', bgr_image)
 
         if cv2.waitKey(1) & 0xFF == ord('z'):
             flag = 0
         elif cv2.waitKey(1) & 0xFF == ord('x'):
             flag = 1
+        elif cv2.waitKey(1) & 0xFF == ord('c'):
+            flag = 2
         elif cv2.waitKey(1) & 0xFF == ord('q'):
             break
         
