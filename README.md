@@ -63,5 +63,8 @@ Let's see your face on the camera.
 * IMDB gender classification test accuracy: 96%.  
 * fer2013 emotion classification test accuracy: 66%.
 
+[OpenCVで画像上に別の画像を描画する](https://note.com/npaka/n/nddb33be1b782)
+>OpenCVで、背景画像上に透過画像をオーバーレイさせるのは、意外と面倒なので備忘録的に残します。
+
 # License
 ライセンス記述
