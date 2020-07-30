@@ -2,6 +2,7 @@ from statistics import mode
 
 import cv2
 from keras.models import load_model
+from imutils import face_utils
 import numpy as np
 import dlib
 
@@ -56,7 +57,7 @@ def emotion_demo():
     slp_count = 0
 
     # dlib用グローバル変数
-    global gray_image, rgb_image
+    global gray_image, rgb_image, gray_face, mark_list
 
     # starting video streaming
     cv2.namedWindow('window_frame')
@@ -71,7 +72,6 @@ def emotion_demo():
             # 目や鼻認識用
             (x,y,w,h) = face_coordinates
             video_face = gray_image[y:y+h,x:x+w]
-
             x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
             gray_face = gray_image[y1:y2, x1:x2]
             try:
@@ -79,38 +79,9 @@ def emotion_demo():
             except:
                 continue
 
-            ''' cv2 目鼻の検出
-            if slp_count >= 5:
-                # 左目の検出
-                lefteyerects = lefteyecc.detectMultiScale(video_face)
-                for lefteyerect in lefteyerects:
-                    (lex,ley,lew,leh) = lefteyerect
-                    #color = emotion_probability * np.asarray((255, 0, 0))
-                    #draw_bounding_box(lefteyerect, rgb_image, color)
-                    print("左目：", lex,ley,lew,leh)
-
-                # 右目の検出
-                righteyerects = righteyecc.detectMultiScale(video_face)
-                for righteyerect in righteyerects:
-                    (rex,rey,rew,reh) = righteyerect
-                    rexx = int(rex + x)
-                    reyy = int(rey + y - reh/2 + 5)
-                    cv2.rectangle(rgb_image, (rexx, reyy), (rexx + rew, reyy + reh), (0, 255, 0), 2)
-                    print("右目：", rex,rey,rew,reh)
-
-                # 鼻の検出
-                noserects = nose.detectMultiScale(video_face)
-                for noserect in noserects:
-                    (nox,noy,now,noh) = noserect
-                    noxx = int(nox + x)
-                    noyy = int(noy + y - noh/2 + 5)
-                    cv2.rectangle(rgb_image, (noxx, noyy), (noxx + now, noyy + noh), (0, 255, 0), 2)
-                    print("鼻：", noxx,noyy,now,noh)
-                    slp_count = 0
-            slp_count += 1
-            '''
-
-            coordinate_detection()
+            # ランドマーク検出
+            marks_list = marks_list_def(bgr_image, x, y, w, h)
+            print(marks_list)
 
 
             gray_face = preprocess_input(gray_face, True)
@@ -182,40 +153,59 @@ def emotion_demo():
 ## http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 このURLからdatファイルをダウンロード
 def dlib_ini():
     # Dlib
-    global CASCADE, PREDICTOR
-    CASCADE_PATH = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
-    CASCADE = cv2.CascadeClassifier(CASCADE_PATH)
-    LEARNED_MODEL_PATH ="../trained_models/dlib_model/shape_predictor_68_face_landmarks.dat"
-    PREDICTOR = dlib.shape_predictor(LEARNED_MODEL_PATH)
+    global face_predictor, face_detector
+    face_detector = dlib.get_frontal_face_detector()
+    predictor_path = '../trained_models/dlib_model/shape_predictor_68_face_landmarks.dat'
+    face_predictor = dlib.shape_predictor(predictor_path)
 
-def coordinate_detection():
-    landmarks = facemark(gray_image)#ランドマーク検出
-    # ランドマークの描画
-    mark_nose = landmarks[0][33:34]
-    mark_left_eye = landmarks[0][36:37]
-    mark_right_eye = landmarks[0][45:46]
-    #mark_list = (mark_nose, mark_left_eye, mark_right_eye)
-    #list(itertools.chain.from_iterable(mark_list))
-    cv2.drawMarker(rgb_image, (mark_nose[0][0], mark_nose[0][1]), (21, 255, 12))
-    cv2.drawMarker(rgb_image, (mark_left_eye[0][0], mark_left_eye[0][1]), (21, 255, 12))
-    cv2.drawMarker(rgb_image, (mark_right_eye[0][0], mark_right_eye[0][1]), (21, 255, 12))
-    #print(mark_list)
+def marks_list_def(bgr_image, x, y, w, h):
+    img_gry = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
+    faces = face_detector(img_gry, 1)
+    faces_lib = dlib.rectangle(x, y, x+w, y+h) # 顔位置配列をdlib形式に変換
 
-def face_position(gray_img):
-    faces = CASCADE.detectMultiScale(gray_img, minSize=(100, 100))
-    return faces
+    # 顔のランドマーク検出
+    landmark = face_predictor(img_gry, faces_lib)
+    # 処理高速化のためランドマーク群をNumPy配列に変換(必須)
+    landmark = face_utils.shape_to_np(landmark)
 
-def facemark(gray_img):
-    faces_roi = face_position(gray_img)
-    landmarks = []
+    # 右目, 左目, 鼻のランドマークを取得
+    mark_nose = landmark[33]
+    mark_left_eye = landmark[36]
+    mark_right_eye = landmark[45]
+    # マークを表示
+    cv2.drawMarker(rgb_image, (mark_nose[0], mark_nose[1]), (21, 255, 12))
+    cv2.drawMarker(rgb_image, (mark_left_eye[0], mark_left_eye[1]), (21, 255, 12))
+    cv2.drawMarker(rgb_image, (mark_right_eye[0], mark_right_eye[1]), (21, 255, 12))
 
-    for face in faces_roi:
-        detector = dlib.get_frontal_face_detector()
-        rects = detector(gray_img, 1)
-        landmarks = []
+    mark_list = []
+    re = [0, 0]
+    le = [0, 0]
+    no = [0, 0]
+    try:
+        re = [mark_right_eye[0], mark_right_eye[1]]
+        le = [mark_left_eye[0], mark_left_eye[1]]
+        no = [mark_nose[0], mark_nose[1]]
+        mark_list.append(re)
+        mark_list.append(le)
+        mark_list.append(no)
 
-        for rect in rects:
-            landmarks.append(
-                np.array([[p.x, p.y] for p in PREDICTOR(gray_img, rect).parts()]))
+        print('---------------------------------------')
+        print(mark_list)
+        print('右目：' + str(mark_list[0]))
+        print('右目(x)：' + str(mark_list[0][0]))
+        print('左目：' + str(mark_list[1]))
+        print('左目(x)：' + str(mark_list[1][0]))
+        print('鼻：' + str(mark_list[2]))
+        print('鼻(x)：' + str(mark_list[2][0]))
 
-    return landmarks
+        """
+        # ランドマーク全描画
+        for (x, y) in landmark:
+            cv2.circle(rgb_image, (x, y), 1, (0, 0, 255), -1)
+        """
+    except: # 取得できなかったりエラーの場合は全て0を返す
+        mark_list.append(re)
+        mark_list.append(le)
+        mark_list.append(no)
+
+    return mark_list
