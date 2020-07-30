@@ -1,5 +1,4 @@
 from statistics import mode
-
 import cv2
 from keras.models import load_model
 from imutils import face_utils
@@ -155,7 +154,7 @@ def dlib_ini():
     # Dlib
     global face_predictor, face_detector
     face_detector = dlib.get_frontal_face_detector()
-    predictor_path = '../trained_models/dlib_model/shape_predictor_68_face_landmarks.dat'
+    predictor_path = '../trained_models/dlib_model/shape_predictor_5_face_landmarks.dat'
     face_predictor = dlib.shape_predictor(predictor_path)
 
 def marks_list_def(bgr_image, x, y, w, h):
@@ -167,11 +166,12 @@ def marks_list_def(bgr_image, x, y, w, h):
     landmark = face_predictor(img_gry, faces_lib)
     # 処理高速化のためランドマーク群をNumPy配列に変換(必須)
     landmark = face_utils.shape_to_np(landmark)
+    mark_list = []
 
     # 右目, 左目, 鼻のランドマークを取得
-    mark_nose = landmark[33]
-    mark_left_eye = landmark[36]
-    mark_right_eye = landmark[45]
+    mark_nose = landmark[4]
+    mark_left_eye = landmark[2]
+    mark_right_eye = landmark[0]
     # マークを表示
     cv2.drawMarker(rgb_image, (mark_nose[0], mark_nose[1]), (21, 255, 12))
     cv2.drawMarker(rgb_image, (mark_left_eye[0], mark_left_eye[1]), (21, 255, 12))
@@ -201,7 +201,8 @@ def marks_list_def(bgr_image, x, y, w, h):
         """
         # ランドマーク全描画
         for (x, y) in landmark:
-            cv2.circle(rgb_image, (x, y), 1, (0, 0, 255), -1)
+            #cv2.circle(rgb_image, (x, y), 1, (0, 0, 255), -1)
+            cv2.drawMarker(rgb_image, (x, y), (21, 255, 12))
         """
     except: # 取得できなかったりエラーの場合は全て0を返す
         mark_list.append(re)
