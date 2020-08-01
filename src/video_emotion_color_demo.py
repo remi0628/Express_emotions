@@ -11,8 +11,10 @@ from utils.inference import detect_faces
 from utils.inference import draw_text
 from utils.inference import draw_bounding_box
 from utils.inference import draw_bounding_box2
+from utils.inference import draw_bounding_box3
 from utils.inference import apply_offsets
 from utils.inference import load_detection_model
+from image_processing import image_resize
 from utils.preprocessor import preprocess_input
 
 
@@ -61,12 +63,15 @@ def emotion_demo():
 
     # starting video streaming
     cv2.namedWindow('window_frame')
-    video_capture = cv2.VideoCapture(1) # 0は内蔵カメラ, 1はUSBカメラ
+    video_capture = cv2.VideoCapture(0) # 0は内蔵カメラ, 1はUSBカメラ
     while True:
         bgr_image = video_capture.read()[1]
         gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
-        rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+        rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGRA2RGBA)
         faces = detect_faces(face_detection, gray_image)
+        # キャプチャフレームの取得
+        frame = video_capture.read()[1]
+        overlay_pic = frame
 
         for face_coordinates in faces:
             # 目や鼻認識用
@@ -100,46 +105,71 @@ def emotion_demo():
             except:
                 continue
 
-            if emotion_text == 'angry':
-                #img = cv2.imread('../img/angry.png', -1)
-                img = cv2.imread('../img/tuno2.png', -1)
-                color = emotion_probability * np.asarray((255, 0, 0))
-            elif emotion_text == 'sad':
-                img = cv2.imread('../img/sad.png', -1) # 関数にする
-                color = emotion_probability * np.asarray((0, 0, 255))
-            elif emotion_text == 'happy':
-                img = cv2.imread('../img/happy.png', -1)
-                img = cv2.imread('../img/tuno2.png', -1)
-                color = emotion_probability * np.asarray((255, 255, 0))
-            elif emotion_text == 'surprise':
-                img = cv2.imread('../img/odoroki.png', -1)
-                color = emotion_probability * np.asarray((0, 255, 255))
-            else:
-                color = emotion_probability * np.asarray((0, 255, 0))
+            if flag == 0 or flag == 1:
+                if emotion_text == 'angry':
+                    img = cv2.imread('../img/angry.png', -1)
+                    color = emotion_probability * np.asarray((255, 0, 0))
+                elif emotion_text == 'sad':
+                    img = cv2.imread('../img/sad.png', -1) # 関数にする
+                    color = emotion_probability * np.asarray((0, 0, 255))
+                elif emotion_text == 'happy':
+                    img = cv2.imread('../img/happy.png', -1)
+                    color = emotion_probability * np.asarray((255, 255, 0))
+                elif emotion_text == 'surprise':
+                    img = cv2.imread('../img/odoroki.png', -1)
+                    color = emotion_probability * np.asarray((0, 255, 255))
+                else :
+                    img = cv2.imread('../img/neutral.png', -1)
+                    color = emotion_probability * np.asarray((0, 255, 0))
+            else:    
+                if emotion_text == 'angry':
+                    img = cv2.imread('../img/ikari.png', -1)
+                    color = emotion_probability * np.asarray((255, 0, 0))
+                elif emotion_text == 'sad':
+                    img = cv2.imread('../img/shock.png', -1) 
+                    color = emotion_probability * np.asarray((0, 0, 255))
+                elif emotion_text == 'happy':
+                    img = cv2.imread('../img/kirakira.png', -1)
+                    color = emotion_probability * np.asarray((255, 255, 0))
+                elif emotion_text == 'surprise':
+                    img = cv2.imread('../img/bikkuri.png', -1)
+                    color = emotion_probability * np.asarray((0, 255, 255))
+                else :
+                    img = cv2.imread('../img/toumei.png', -1)
+                    color = emotion_probability * np.asarray((0, 255, 0))
+                
 
             color = color.astype(int)
             color = color.tolist()
 
-            if flag == 0: # 別ウィンドウに画像を表示
-                    draw_bounding_box(face_coordinates, rgb_image, color)
-            elif flag == 1: # リアルタイムで顔に画像を載せる
-                    #rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img)
-                    rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, emotion_text)
-            draw_text(face_coordinates, rgb_image, emotion_mode,
-                      color, 0, -45, 1, 1)
+            if flag == 0:
+                draw_bounding_box(face_coordinates, rgb_image, color)
+            elif flag == 1:
+                rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, marks_list)              
+            elif flag == 2:
+                overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, frame, marks_list)
+                rgb_image = overlay_pic       
 
+            draw_text(face_coordinates, rgb_image, emotion_mode, color, 0, -45, 1, 1)
+            bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)  
+        
+        
         if flag == 0:
+            img = image_resize(img)
             cv2.imshow('image', img)
-        elif flag == 1:
+        elif flag == 1 or flag == 2:
             cv2.destroyWindow('image')
         cv2.waitKey(10)
 
-        bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
         cv2.imshow('window_frame', bgr_image)
+        # cv2.imshow('own_window', bgr_image)
+
         if cv2.waitKey(1) & 0xFF == ord('z'):
             flag = 0
         elif cv2.waitKey(1) & 0xFF == ord('x'):
             flag = 1
+        elif cv2.waitKey(1) & 0xFF == ord('c'):
+            flag = 2
         elif cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
@@ -209,3 +239,4 @@ def marks_list_def(bgr_image, x, y, w, h):
         mark_list.append(no)
 
     return mark_list
+    # mark_list[[re(x), re(y)], [le(x), le(y)], [no(x), no(y)]]
