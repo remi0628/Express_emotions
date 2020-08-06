@@ -62,16 +62,15 @@ def emotion_demo():
     global gray_image, rgb_image, gray_face, mark_list
 
     # starting video streaming
-    cv2.namedWindow('window_frame')
+    cv2.namedWindow('window_frame', cv2.WINDOW_NORMAL)
     video_capture = cv2.VideoCapture(0) # 0は内蔵カメラ, 1はUSBカメラ
+    
     while True:
         bgr_image = video_capture.read()[1]
         gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
         rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGRA2RGBA)
         faces = detect_faces(face_detection, gray_image)
-        # キャプチャフレームの取得
-        frame = video_capture.read()[1]
-        overlay_pic = frame
+          
 
         for face_coordinates in faces:
             # 目や鼻認識用
@@ -147,7 +146,7 @@ def emotion_demo():
             elif flag == 1:
                 rgb_image = draw_bounding_box2(face_coordinates, rgb_image, color, img, marks_list)              
             elif flag == 2:
-                overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, frame, marks_list)
+                overlay_pic = draw_bounding_box3(face_coordinates, rgb_image, color, img, marks_list)
                 rgb_image = overlay_pic       
 
             draw_text(face_coordinates, rgb_image, emotion_mode, color, 0, -45, 1, 1)
@@ -157,11 +156,13 @@ def emotion_demo():
         if flag == 0:
             img = image_resize(img)
             cv2.imshow('image', img)
+            cv2.destroyWindow('Window_frame')
         elif flag == 1 or flag == 2:
             cv2.destroyWindow('image')
+            cv2.imshow('window_frame', bgr_image)
         cv2.waitKey(10)
 
-        cv2.imshow('window_frame', bgr_image)
+        
         # cv2.imshow('own_window', bgr_image)
 
         if cv2.waitKey(1) & 0xFF == ord('z'):
