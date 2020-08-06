@@ -50,39 +50,64 @@ def draw_bounding_box3(face_coordinates, image_array, color, img, frame):
 def draw_bounding_box2(face_coordinates, image_array, color, img, marks_list):
     x, y, w, h = face_coordinates
     
-    x, y = marks_list[1][0], marks_list[1][1]
-
-    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
-    img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
-    
-    img_face = cv2.resize(img, (int(w), int(h)))  #変更＊　数を一致させる
-    img2 = image_array.copy()
-    img2[y:y+int(h), x:x+int(w)] = img_face       #変更＊　数を一致させる
-    return img2
-
-def draw_bounding_box3(face_coordinates, image_array, color, img, frame, marks_list):
-    x, y, w, h = face_coordinates
-    ny = y - 50
-    
-    
     h1 = marks_list[2][0] - marks_list[1][0]
     h2 = marks_list[2][1] - marks_list[1][1]
+    h3 = marks_list[0][0] - marks_list[2][0]
+    h4 = marks_list[0][1] - marks_list[2][1]
     n1 = marks_list[1][0] - h1
     n2 = marks_list[1][1] - h2
     
-    '''
-    n1 = (-1 * marks_list[2][0] + 6 * marks_list[1][0])//5
-    n2 = (-1 * marks_list[2][1] + 6 * marks_list[1][1])//5
-    '''
+    # 角度を変更
+    if h1 > h3:
+        angle = h1//10
+    else:
+        angle = -h3//10
+    
 
     # cv2.rectangle(image_array, (n1, n2), (n1 + w, n2 + h), color, 2)
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
-        
-    img_face = cv2.resize(img, (int(w/5), int(h/5)))  #変更＊　数を一致させる
-    img2 = image_array.copy()
-    img2[n2:n2+int(h/5), n1:n1+int(w/5)] = img_face       #変更＊　数を一致させる
     
-    img3 = overlayImage(frame, img2, (0, 0))
+
+    mat = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 0.5)
+    img_face = cv2.resize(img, (w, h))  #変更＊　数を一致させる
+    img_face = cv2.warpAffine(img_face, mat, (w, h))
+    img2 = image_array.copy()
+    img2[n2:n2+h, n1:n1+w] = img_face       #変更＊　数を一致させる
+    return img2
+
+def draw_bounding_box3(face_coordinates, image_array, color, img, marks_list):
+    x, y, w, h = face_coordinates
+    ny = y - 50
+    m, n = 7, 4
+    
+    h1 = marks_list[2][0] - marks_list[1][0]
+    h2 = marks_list[2][1] - marks_list[1][1]
+    h3 = marks_list[0][0] - marks_list[2][0]
+    h4 = marks_list[0][1] - marks_list[2][1]
+    n1 = marks_list[1][0] - h1
+    n2 = marks_list[1][1] - h2
+    
+    # 角度を変更
+    if h1 > h3:
+        angle = h1//10
+    else:
+        angle = -h3//10
+    
+    
+    g1 = (-n * marks_list[2][0] + m * marks_list[1][0]) // (m - n)
+    g2 = (-n * marks_list[2][1] + m * marks_list[1][1]) // (m - n)
+    
+
+    # cv2.rectangle(image_array, (n1, n2), (n1 + w, n2 + h), color, 2)
+    img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
+
+    # mat = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 0.5)   
+    img_face = cv2.resize(img, (w//5, h//5))  #変更＊　数を一致させる
+    # img_face = cv2.warpAffine(img_face, mat, (w//5, h//5))
+    img2 = image_array.copy()
+    img2[g2:g2+h//5, g1:g1+w//5] = img_face       #変更＊　数を一致させる
+    
+    img3 = overlayImage(image_array, img2, (0, 0))
     return img3
 
 def apply_offsets(face_coordinates, offsets):
