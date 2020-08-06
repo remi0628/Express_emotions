@@ -1,11 +1,28 @@
-# Name
-Using python and real time video to read emotions from the face and display effects on the video It is.
+# Emotional expressive machine
+時にはビデオ会議で顔を出したくない日はありませんか？  
+なんとこれを使用すればあなたに代わってビデオ会議で感情を表現したり、顔に合ったリアクションを表示してくれます！！  
 
-# DEMO
-このプログラム魅力の説明
+Do you sometimes have days when you don't want to show up for a video conference?  
+What a great way to express emotions and display face-to-face reactions in a video conference for you!  
 
 # Features
-プログラムの特徴説明。セールスポイント、差別化等
+* Pythonとリアルタイムビデオを使用してあなたの顔の感情を読み取り、リアクションを表示します  
+* ソフトウェアライブラリ「Dlib」を使用しており顔の傾きによって画像の傾きも変わります  
+* OBS studioと合わせて使用すればビデオ会議でスムーズに機能の切り替えが可能になります   
+ **機能は以下の三つです**
+* 感情に合わせた画像を表示します
+* カメラを使用した時に自分の顔に感情に合わせた画像を貼り付けます
+* 感情に合わせたリアクションを顔の周りに表示します
+
+
+
+* Using python and real time video to read emotions from the face and display effects on the video It is.  
+* It uses the software library "Dlib" and the tilt of the image changes according to the tilt of the face.  
+* When used in conjunction with OBS studio, it makes the transition to and from video conferencing a breeze.  
+ **There are three features**
+* Displays an emotionally relevant image.
+* Paste an emotionally relevant image on your face when you use the camera
+* Display emotional reactions around your face.
 
 
 # Requirement
@@ -19,6 +36,7 @@ Using python and real time video to read emotions from the face and display effe
 * scipy 1.1.0
 * h5py 2.7.0
 * statistics 1.0.3.5
+* Dlib 19.20.0
 
 Each library may work with versions other than those listed above.
 
@@ -67,4 +85,6 @@ Let's see your face on the camera.
 >OpenCVで、背景画像上に透過画像をオーバーレイさせるのは、意外と面倒なので備忘録的に残します。
 
 # License
-ライセンス記述
+The image uses a free illustration shop.  
+Please follow the license on which this program is based.  
+Places to see. **The underlying program**
