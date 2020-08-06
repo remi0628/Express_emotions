@@ -65,81 +65,83 @@ def emotion_demo():
     cv2.namedWindow('window_frame', cv2.WINDOW_NORMAL)
     video_capture = cv2.VideoCapture(0) # 0は内蔵カメラ, 1はUSBカメラ
     
+    
     while True:
         bgr_image = video_capture.read()[1]
         gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
         rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGRA2RGBA)
         faces = detect_faces(face_detection, gray_image)
-          
-
-        for face_coordinates in faces:
-            # 目や鼻認識用
-            (x,y,w,h) = face_coordinates
-            video_face = gray_image[y:y+h,x:x+w]
-            x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
-            gray_face = gray_image[y1:y2, x1:x2]
-            try:
-                gray_face = cv2.resize(gray_face, (emotion_target_size))
-            except:
-                continue
-
-            # ランドマーク検出
-            marks_list = marks_list_def(bgr_image, x, y, w, h)
-            print(marks_list)
 
 
-            gray_face = preprocess_input(gray_face, True)
-            gray_face = np.expand_dims(gray_face, 0)
-            gray_face = np.expand_dims(gray_face, -1)
-            emotion_prediction = emotion_classifier.predict(gray_face)
-            emotion_probability = np.max(emotion_prediction)
-            emotion_label_arg = np.argmax(emotion_prediction)
-            emotion_text = emotion_labels[emotion_label_arg]
-            emotion_window.append(emotion_text)
+        try:
+            for face_coordinates in faces:
+                # 目や鼻認識用
+                (x,y,w,h) = face_coordinates
+                video_face = gray_image[y:y+h,x:x+w]
+                x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
+                gray_face = gray_image[y1:y2, x1:x2]
+                try:
+                    gray_face = cv2.resize(gray_face, (emotion_target_size))
+                except:
+                    continue
 
-            if len(emotion_window) > frame_window:
-                emotion_window.pop(0)
-            try:
-                emotion_mode = mode(emotion_window)
-            except:
-                continue
+                # ランドマーク検出
+                marks_list = marks_list_def(bgr_image, x, y, w, h)
+                # print(marks_list)
 
-            if flag == 0 or flag == 1:
-                if emotion_text == 'angry':
-                    img = cv2.imread('../img/angry.png', -1)
-                    color = emotion_probability * np.asarray((255, 0, 0))
-                elif emotion_text == 'sad':
-                    img = cv2.imread('../img/sad.png', -1) # 関数にする
-                    color = emotion_probability * np.asarray((0, 0, 255))
-                elif emotion_text == 'happy':
-                    img = cv2.imread('../img/happy.png', -1)
-                    color = emotion_probability * np.asarray((255, 255, 0))
-                elif emotion_text == 'surprise':
-                    img = cv2.imread('../img/odoroki.png', -1)
-                    color = emotion_probability * np.asarray((0, 255, 255))
-                else :
-                    img = cv2.imread('../img/neutral.png', -1)
-                    color = emotion_probability * np.asarray((0, 255, 0))
-            else:    
-                if emotion_text == 'angry':
-                    img = cv2.imread('../img/ikari.png', -1)
-                    color = emotion_probability * np.asarray((255, 0, 0))
-                elif emotion_text == 'sad':
-                    img = cv2.imread('../img/shock.png', -1) 
-                    color = emotion_probability * np.asarray((0, 0, 255))
-                elif emotion_text == 'happy':
-                    img = cv2.imread('../img/kirakira.png', -1)
-                    color = emotion_probability * np.asarray((255, 255, 0))
-                elif emotion_text == 'surprise':
-                    img = cv2.imread('../img/bikkuri.png', -1)
-                    color = emotion_probability * np.asarray((0, 255, 255))
-                else :
-                    img = cv2.imread('../img/toumei.png', -1)
-                    color = emotion_probability * np.asarray((0, 255, 0))
-                
 
-            color = color.astype(int)
-            color = color.tolist()
+                gray_face = preprocess_input(gray_face, True)
+                gray_face = np.expand_dims(gray_face, 0)
+                gray_face = np.expand_dims(gray_face, -1)
+                emotion_prediction = emotion_classifier.predict(gray_face)
+                emotion_probability = np.max(emotion_prediction)
+                emotion_label_arg = np.argmax(emotion_prediction)
+                emotion_text = emotion_labels[emotion_label_arg]
+                emotion_window.append(emotion_text)
+
+                if len(emotion_window) > frame_window:
+                    emotion_window.pop(0)
+                try:
+                    emotion_mode = mode(emotion_window)
+                except:
+                    continue
+
+                if flag == 0 or flag == 1:
+                    if emotion_text == 'angry':
+                        img = cv2.imread('../img/angry.png', -1)
+                        color = emotion_probability * np.asarray((255, 0, 0))
+                    elif emotion_text == 'sad':
+                        img = cv2.imread('../img/sad.png', -1) # 関数にする
+                        color = emotion_probability * np.asarray((0, 0, 255))
+                    elif emotion_text == 'happy':
+                        img = cv2.imread('../img/happy.png', -1)
+                        color = emotion_probability * np.asarray((255, 255, 0))
+                    elif emotion_text == 'surprise':
+                        img = cv2.imread('../img/odoroki.png', -1)
+                        color = emotion_probability * np.asarray((0, 255, 255))
+                    else :
+                        img = cv2.imread('../img/neutral.png', -1)
+                        color = emotion_probability * np.asarray((0, 255, 0))
+                else:    
+                    if emotion_text == 'angry':
+                        img = cv2.imread('../img/ikari.png', -1)
+                        color = emotion_probability * np.asarray((255, 0, 0))
+                    elif emotion_text == 'sad':
+                        img = cv2.imread('../img/shock.png', -1) 
+                        color = emotion_probability * np.asarray((0, 0, 255))
+                    elif emotion_text == 'happy':
+                        img = cv2.imread('../img/kirakira.png', -1)
+                        color = emotion_probability * np.asarray((255, 255, 0))
+                    elif emotion_text == 'surprise':
+                        img = cv2.imread('../img/bikkuri.png', -1)
+                        color = emotion_probability * np.asarray((0, 255, 255))
+                    else :
+                        img = cv2.imread('../img/toumei.png', -1)
+                        color = emotion_probability * np.asarray((0, 255, 0))
+                    
+
+                color = color.astype(int)
+                color = color.tolist()
 
             if flag == 0:
                 draw_bounding_box(face_coordinates, rgb_image, color)
@@ -151,12 +153,14 @@ def emotion_demo():
 
             draw_text(face_coordinates, rgb_image, emotion_mode, color, 0, -45, 1, 1)
             bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)  
-        
-        
+        except:
+            flag = 0
+            
+
         if flag == 0:
             img = image_resize(img)
             cv2.imshow('image', img)
-            cv2.destroyWindow('Window_frame')
+            cv2.destroyWindow('window_frame')
         elif flag == 1 or flag == 2:
             cv2.destroyWindow('image')
             cv2.imshow('window_frame', bgr_image)
@@ -204,9 +208,9 @@ def marks_list_def(bgr_image, x, y, w, h):
     mark_left_eye = landmark[36]
     mark_right_eye = landmark[45]
     # マークを表示
-    cv2.drawMarker(rgb_image, (mark_nose[0], mark_nose[1]), (21, 255, 12))
-    cv2.drawMarker(rgb_image, (mark_left_eye[0], mark_left_eye[1]), (21, 255, 12))
-    cv2.drawMarker(rgb_image, (mark_right_eye[0], mark_right_eye[1]), (21, 255, 12))
+    # cv2.drawMarker(rgb_image, (mark_nose[0], mark_nose[1]), (21, 255, 12))
+    # cv2.drawMarker(rgb_image, (mark_left_eye[0], mark_left_eye[1]), (21, 255, 12))
+    # cv2.drawMarker(rgb_image, (mark_right_eye[0], mark_right_eye[1]), (21, 255, 12))
 
     mark_list = []
     re = [0, 0]
@@ -220,6 +224,7 @@ def marks_list_def(bgr_image, x, y, w, h):
         mark_list.append(le)
         mark_list.append(no)
 
+        """
         print('---------------------------------------')
         print(mark_list)
         print('右目：' + str(mark_list[0]))
@@ -229,7 +234,7 @@ def marks_list_def(bgr_image, x, y, w, h):
         print('鼻：' + str(mark_list[2]))
         print('鼻(x)：' + str(mark_list[2][0]))
 
-        """
+        
         # ランドマーク全描画
         for (x, y) in landmark:
             cv2.circle(rgb_image, (x, y), 1, (0, 0, 255), -1)
