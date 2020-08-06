@@ -10,19 +10,21 @@ What a great way to express emotions and display face-to-face reactions in a vid
 * ソフトウェアライブラリ「Dlib」を使用しており顔の傾きによって画像の傾きも変わります  
 * OBS studioと合わせて使用すればビデオ会議でスムーズに機能の切り替えが可能になります   
  **機能は以下の三つです**
-* 感情に合わせた画像を表示します
-* カメラを使用した時に自分の顔に感情に合わせた画像を貼り付けます
-* 感情に合わせたリアクションを顔の周りに表示します
-
-
-
+* Key[Z]：感情に合わせた画像を表示します
+* Key[x]：カメラを使用した時に自分の顔に感情に合わせた画像を貼り付けます
+* Key[c]：感情に合わせたリアクションを顔の周りに表示します
+* Kry[q]：ソフトを終了します
+  - Keyは反応するまで長押ししてください
+---
 * Using python and real time video to read emotions from the face and display effects on the video It is.  
 * It uses the software library "Dlib" and the tilt of the image changes according to the tilt of the face.  
 * When used in conjunction with OBS studio, it makes the transition to and from video conferencing a breeze.  
  **There are three features**
-* Displays an emotionally relevant image.
-* Paste an emotionally relevant image on your face when you use the camera
-* Display emotional reactions around your face.
+* Key[z]：Displays an emotionally relevant image.
+* Key[x]：Paste an emotionally relevant image on your face when you use the camera
+* Key[c]：Display emotional reactions around your face.
+* Kry[q]：Exit the software.
+  - Press and hold the Key until it reacts.
 
 
 # Requirement
@@ -65,7 +67,8 @@ $ python main.py
 Let's see your face on the camera.
 
 # Note
-注意点等
+Please refer to the installation method from other sites when installing Dlib.
+
 
 # Author
 * Author
@@ -74,6 +77,8 @@ Let's see your face on the camera.
 * Belonging
   - Tokyo University of Technology Department of Media
 * E-mail
+  - m011813471@edu.teu.ac.jp [Shimane]
+  - m011906297@edu.teu.ac.jp [Okada]
 
 # The underlying program
 [Face classification and detection.](https://github.com/oarriaga/face_classification)
@@ -85,6 +90,6 @@ Let's see your face on the camera.
 >OpenCVで、背景画像上に透過画像をオーバーレイさせるのは、意外と面倒なので備忘録的に残します。
 
 # License
-The image uses a free illustration shop.  
+The image uses a free いらすとや.  
 Please follow the license on which this program is based.  
 Places to see. **The underlying program**
