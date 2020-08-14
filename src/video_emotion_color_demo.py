@@ -63,7 +63,7 @@ def emotion_demo():
 
     # starting video streaming
     cv2.namedWindow('window_frame', cv2.WINDOW_NORMAL)
-    video_capture = cv2.VideoCapture(1) # 0は内蔵カメラ, 1はUSBカメラ
+    video_capture = cv2.VideoCapture(0) # 0は内蔵カメラ, 1はUSBカメラ
     
     
     while True:
