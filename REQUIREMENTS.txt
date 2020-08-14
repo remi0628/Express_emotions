@@ -1,7 +1,9 @@
 certifi==2018.8.24
 cycler==0.10.0
+dlib==19.20.0
 docutils==0.16
 h5py==2.7.0
+imutils==0.5.3
 Keras==2.0.5
 kiwisolver==1.1.0
 matplotlib==3.0.3
