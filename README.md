@@ -9,17 +9,22 @@ What a great way to express emotions and display face-to-face reactions in a vid
 * Pythonとリアルタイムビデオを使用してあなたの顔の感情を読み取り、リアクションを表示します  
 * ソフトウェアライブラリ「Dlib」を使用しており顔の傾きによって画像の傾きも変わります  
 * OBS studioと合わせて使用すればビデオ会議でスムーズに機能の切り替えが可能になります   
- **機能は以下の三つです**
+ **機能は以下の三つです　（画像ではGoogle meetを使用しています）**
 * Key[Z]：感情に合わせた画像を表示します
+<img src="https://user-images.githubusercontent.com/16487150/90264320-e27ec280-de8b-11ea-8cb7-a1b8057e05c0.jpg" width="600px">
 * Key[x]：カメラを使用した時に自分の顔に感情に合わせた画像を貼り付けます
+<img src="https://user-images.githubusercontent.com/16487150/90264084-8ae05700-de8b-11ea-8d1b-6354db34394f.jpg" width="600px">
 * Key[c]：感情に合わせたリアクションを顔の周りに表示します
+
+<img src="https://user-images.githubusercontent.com/16487150/90263774-13aac300-de8b-11ea-9f4b-dc3168749f8e.jpg" width="600px">
+
 * Kry[q]：ソフトを終了します
   - Keyは反応するまで長押ししてください
 ---
 * Using python and real time video to read emotions from the face and display effects on the video It is.  
 * It uses the software library "Dlib" and the tilt of the image changes according to the tilt of the face.  
 * When used in conjunction with OBS studio, it makes the transition to and from video conferencing a breeze.  
- **There are three features**
+ **There are three features (Images use Google Conference)**
 * Key[z]：Displays an emotionally relevant image.
 * Key[x]：Paste an emotionally relevant image on your face when you use the camera
 * Key[c]：Display emotional reactions around your face.
@@ -40,6 +45,7 @@ What a great way to express emotions and display face-to-face reactions in a vid
 * statistics 1.0.3.5
 * Dlib 19.20.0
 
+各ライブラリは、上記以外のバージョンでも動作する場合があります。  
 Each library may work with versions other than those listed above.
 
 # Installation
@@ -67,7 +73,8 @@ $ python main.py
 Let's see your face on the camera.
 
 # Note
-Please refer to the installation method from other sites when installing Dlib.
+OBS Studio, Dlibをインストールする際は、他サイトのインストール方法を参考にして下さい。  
+Please refer to the installation method from other sites when installing OBS Studio and Dlib.
 
 
 # Author
