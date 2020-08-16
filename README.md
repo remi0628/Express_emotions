@@ -1,6 +1,6 @@
 # Emotional expressive machine
-時にはビデオ会議で顔を出したくない日はありませんか？  
-なんとこれを使用すればあなたに代わってビデオ会議で感情を表現したり、顔に合ったリアクションを表示してくれます！！  
+時にはビデオ会議で顔を出したくない、そんな日はありませんか？  
+なんとこれを使用すればあなたに代わってビデオ会議で感情を表現する事や顔に合ったリアクションを表示してくれます！！  
 
 Do you sometimes have days when you don't want to show up for a video conference?  
 What a great way to express emotions and display face-to-face reactions in a video conference for you!  
