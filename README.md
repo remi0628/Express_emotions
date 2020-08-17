@@ -11,12 +11,12 @@ What a great way to express emotions and display face-to-face reactions in a vid
 * OBS studioと合わせて使用すればビデオ会議でスムーズに機能の切り替えが可能になります   
  **機能は以下の三つです　（画像ではGoogle meetを使用しています）**
 * Key[Z]：感情に合わせた画像を表示します
-<img src="https://user-images.githubusercontent.com/16487150/90264320-e27ec280-de8b-11ea-8cb7-a1b8057e05c0.jpg" width="600px">
+<img src="https://user-images.githubusercontent.com/16487150/90358204-52f63100-e090-11ea-907b-86cf56d78798.png" width="600px">
 * Key[x]：カメラを使用した時に自分の顔に感情に合わせた画像を貼り付けます
-<img src="https://user-images.githubusercontent.com/16487150/90264084-8ae05700-de8b-11ea-8d1b-6354db34394f.jpg" width="600px">
+<img src="https://user-images.githubusercontent.com/16487150/90358180-44a81500-e090-11ea-885a-f6c7a51d8269.png" width="600px">
 * Key[c]：感情に合わせたリアクションを顔の周りに表示します
 
-<img src="https://user-images.githubusercontent.com/16487150/90263774-13aac300-de8b-11ea-9f4b-dc3168749f8e.jpg" width="600px">
+<img src="https://user-images.githubusercontent.com/16487150/90358152-2d692780-e090-11ea-9fb7-228c5260e84d.png" width="600px">
 
 * Kry[q]：ソフトを終了します
   - Keyは反応するまで長押ししてください
