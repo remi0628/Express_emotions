@@ -12,23 +12,23 @@ What a great way to express emotions and display face-to-face reactions in a vid
  **機能は以下の三つです　（画像ではGoogle meetを使用しています）**
 * Key[Z]：感情に合わせた画像を表示します
 <img src="https://user-images.githubusercontent.com/16487150/90358204-52f63100-e090-11ea-907b-86cf56d78798.png" width="600px">
-* Key[x]：カメラを使用した時に自分の顔に感情に合わせた画像を貼り付けます
+* Key[X]：カメラを使用した時に自分の顔に感情に合わせた画像を貼り付けます
 <img src="https://user-images.githubusercontent.com/16487150/90358180-44a81500-e090-11ea-885a-f6c7a51d8269.png" width="600px">
-* Key[c]：感情に合わせたリアクションを顔の周りに表示します
+* Key[C]：感情に合わせたリアクションを顔の周りに表示します
 
 <img src="https://user-images.githubusercontent.com/16487150/90358152-2d692780-e090-11ea-9fb7-228c5260e84d.png" width="600px">
 
-* Kry[q]：ソフトを終了します
+* Kry[Q]：ソフトを終了します
   - Keyは反応するまで長押ししてください
 ---
 * Using python and real time video to read emotions from the face and display effects on the video It is.  
 * It uses the software library "Dlib" and the tilt of the image changes according to the tilt of the face.  
 * When used in conjunction with OBS studio, it makes the transition to and from video conferencing a breeze.  
  **There are three features (Images use Google Conference)**
-* Key[z]：Displays an emotionally relevant image.
-* Key[x]：Paste an emotionally relevant image on your face when you use the camera
-* Key[c]：Display emotional reactions around your face.
-* Kry[q]：Exit the software.
+* Key[Z]：Displays an emotionally relevant image.
+* Key[X]：Paste an emotionally relevant image on your face when you use the camera
+* Key[C]：Display emotional reactions around your face.
+* Kry[Q]：Exit the software.
   - Press and hold the Key until it reacts.
 
 
