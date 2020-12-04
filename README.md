@@ -96,7 +96,7 @@ Please refer to the installation method from other sites when installing OBS Stu
 [OpenCVで画像上に別の画像を描画する](https://note.com/npaka/n/nddb33be1b782)
 >OpenCVで、背景画像上に透過画像をオーバーレイさせるのは、意外と面倒なので備忘録的に残します。
 
-# License
+# License 
 The image uses a free いらすとや.  
 Please follow the license on which this program is based.  
 Places to see. **The underlying program**
