@@ -70,8 +70,8 @@ OBS Studio、Dlibのインストール方法については他サイトを参考
 * Belonging
   - Tokyo University of Technology Department of Media
 * E-mail
-  -m011813471@edu.teu.ac.jp[Shimane]
-  -m011906297@edu.teu.ac.jp[Okada]
+  - m011813471@edu.teu.ac.jp[Shimane]
+  - m011906297@edu.teu.ac.jp[Okada]
 # The underlying program
 [Face classification and detection.](https://github.com/oarriaga/face_classification)
 >Real-time face detection and emotion/gender classification using fer2013/IMDB datasets with a keras CNN model and openCV.  
