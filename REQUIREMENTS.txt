@@ -1,4 +1,4 @@
-certifi==2018.8.24
+certifi==2022.12.7
 cycler==0.10.0
 dlib==19.20.0
 docutils==0.16
